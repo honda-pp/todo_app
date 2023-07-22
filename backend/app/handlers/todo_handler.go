@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/honda-pp/todo_app/backend/app/usecases"
+	"github.com/honda-pp/todo_app/backend/infrastructure/logger"
 )
 
 type TodoHandler struct {
@@ -19,5 +20,10 @@ func NewTodoHandler(todoUsecase *usecases.TodoUsecase) *TodoHandler {
 
 func (h *TodoHandler) GetTodos(c *gin.Context) {
 
-	c.JSON(http.StatusOK, gin.H{"todos": []string{"todo1", "todo2"}})
+	todoList, err := h.todoUsecase.GetTodoList()
+	if err != nil {
+		logger.LogError(err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"todoList": todoList})
 }
