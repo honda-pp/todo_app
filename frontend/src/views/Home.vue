@@ -3,8 +3,8 @@
     <h1>ToDo List</h1>
     <ul>
       <li v-for="todo in todoList" :key="todo.task_id">
-        {{ todo.title }} {{ todo.task_id }}
-        <button @click="deleteTodo(todo.id)">Delete</button>
+        {{ todo.title }}
+        <button @click="deleteTodo(todo.task_id)">Delete</button>
       </li>
     </ul>
     <form @submit.prevent="addTodo">
@@ -41,10 +41,11 @@ const addTodo = async () => {
   newTodoTitle.value = '';
 };
 
-const deleteTodo = (todoId) => {
-
-  todoList.value = todoList.value.filter((todo) => todo.id !== todoId);
+const deleteTodo = async (task_id) => {
+  await store.dispatch('deleteTodo', task_id);
+  todoList.value = store.state.todoList;
 };
+
 </script>
 
 <style>

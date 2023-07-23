@@ -62,3 +62,12 @@ func (r *TodoRepository) CreateTodo(newTodo *models.Todo) (int, error) {
 	}
 	return taskID, nil
 }
+
+func (r *TodoRepository) DeleteTodo(taskID int) error {
+	deleteQuery := "DELETE FROM todo WHERE task_id = $1"
+	_, err := r.db.Exec(deleteQuery, taskID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
