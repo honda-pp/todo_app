@@ -18,3 +18,13 @@ export const getTodoList = async () => {
     throw error;
   }
 };
+
+export const addTodoItem = async (newTodoData) => {
+  try {
+    const response = await todoApi.post('/todo', newTodoData);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding todo item:', error);
+    throw error;
+  }
+};

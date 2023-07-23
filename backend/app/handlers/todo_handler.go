@@ -44,5 +44,5 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Todo created successfully", "taskId": taskID})
+	c.JSON(http.StatusCreated, gin.H{"message": "Todo created successfully", "task_id": taskID})
 }
