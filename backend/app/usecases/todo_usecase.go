@@ -16,8 +16,11 @@ func NewTodoUsecase(todoRepo *repositories.TodoRepository) *TodoUsecase {
 }
 
 func (uc *TodoUsecase) GetTodoList() ([]*models.Todo, error) {
-
 	return uc.todoRepo.GetTodoList()
+}
+
+func (uc *TodoUsecase) GetTodo(taskID int) (*models.Todo, error) {
+	return uc.todoRepo.GetTodo(taskID)
 }
 
 func (uc *TodoUsecase) CreateTodo(todo *models.Todo) (int, error) {
