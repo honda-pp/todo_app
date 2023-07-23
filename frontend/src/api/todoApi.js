@@ -31,10 +31,18 @@ export const addTodoItem = async (newTodoData) => {
 
 export const deleteTodoItem = async (taskId) => {
   try {
-    const response = await todoApi.delete(`/todoList/${taskId}`);
-    return response.data;
+    await todoApi.delete(`/todo/${taskId}`);
   } catch (error) {
     console.error(`Error deleting todo item with task_id ${taskId}:`, error);
+    throw error;
+  }
+};
+
+export const updateTodoItem = async (updatedTodo) => {
+  try {
+    await todoApi.put(`/todo/${updatedTodo.task_id}`, updatedTodo);
+  } catch (error) {
+    console.error(`Error deleting todo item with task_id ${updatedTodo.task_id}:`, error);
     throw error;
   }
 };
