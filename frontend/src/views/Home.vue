@@ -2,8 +2,8 @@
   <div>
     <h1>ToDo List</h1>
     <ul>
-      <li v-for="todo in todoList" :key="todo.id">
-        {{ todo.title }}
+      <li v-for="todo in todoList" :key="todo.task_id">
+        {{ todo.title }} {{ todo.task_id }}
         <button @click="deleteTodo(todo.id)">Delete</button>
       </li>
     </ul>
@@ -13,7 +13,6 @@
     </form>
   </div>
 </template>
-
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -29,13 +28,16 @@ onMounted(async () => {
   todoList.value = store.state.todoList;
 });
 
-const addTodo = () => {
-
-  todoList.value.push({
-    id: todoList.value.length + 1,
+const addTodo = async () => {
+  const newTodoData = {
+    task_id: -1,
     title: newTodoTitle.value,
+    description: '',
     completed: false,
-  });
+  };
+
+  await store.dispatch('addTodo', newTodoData);
+
   newTodoTitle.value = '';
 };
 

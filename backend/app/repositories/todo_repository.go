@@ -2,9 +2,9 @@ package repositories
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/honda-pp/todo_app/backend/app/models"
-	"github.com/honda-pp/todo_app/backend/infrastructure/logger"
 )
 
 type TodoRepository struct {
@@ -43,7 +43,6 @@ func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 		if err != nil {
 			return nil, err
 		}
-		logger.LogInfo("ddd")
 		todoList = append(todoList, todo)
 	}
 
@@ -52,4 +51,14 @@ func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 	}
 
 	return todoList, nil
+}
+
+func (r *TodoRepository) CreateTodo(newTodo *models.Todo) (int, error) {
+	insertQuery := "INSERT INTO todo (title, description, due_date, completed, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING task_id"
+	var taskID int
+	err := r.db.QueryRow(insertQuery, newTodo.Title, newTodo.Description, newTodo.DueDate, newTodo.Completed, time.Now()).Scan(&taskID)
+	if err != nil {
+		return -1, err
+	}
+	return taskID, nil
 }

@@ -34,8 +34,8 @@ func main() {
 	api := router.Group("/api")
 	{
 		api.GET("/todoList", todoHandler.GetTodoList)
+		api.POST("/todo", todoHandler.CreateTodo)
 		/*
-			api.POST("/todoList", todoHandler.CreateTodo)
 			api.PUT("/todoList/:id", todoHandler.UpdateTodo)
 			api.DELETE("/todoList/:id", todoHandler.DeleteTodo)
 		*/
