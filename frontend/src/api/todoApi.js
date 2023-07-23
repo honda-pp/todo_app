@@ -28,3 +28,13 @@ export const addTodoItem = async (newTodoData) => {
     throw error;
   }
 };
+
+export const deleteTodoItem = async (taskId) => {
+  try {
+    const response = await todoApi.delete(`/todoList/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting todo item with task_id ${taskId}:`, error);
+    throw error;
+  }
+};

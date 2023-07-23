@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/honda-pp/todo_app/backend/app/models"
@@ -45,4 +46,22 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Todo created successfully", "task_id": taskID})
+}
+
+func (h *TodoHandler) DeleteTodo(c *gin.Context) {
+	taskIDStr := c.Param("task_id")
+	taskID, err := strconv.Atoi(taskIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task_id"})
+		return
+	}
+
+	err = h.todoUsecase.DeleteTodo(taskID)
+	if err != nil {
+		logger.LogError(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete todo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
 }
