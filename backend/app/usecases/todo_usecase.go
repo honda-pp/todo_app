@@ -24,6 +24,10 @@ func (uc *TodoUsecase) CreateTodo(todo *models.Todo) (int, error) {
 	return uc.todoRepo.CreateTodo(todo)
 }
 
+func (uc *TodoUsecase) UpdateTodo(todo *models.Todo) error {
+	return uc.todoRepo.UpdateTodo(todo)
+}
+
 func (uc *TodoUsecase) DeleteTodo(taskID int) error {
 	return uc.todoRepo.DeleteTodo(taskID)
 }

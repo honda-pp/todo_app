@@ -35,7 +35,7 @@ func main() {
 	{
 		api.GET("/todoList", todoHandler.GetTodoList)
 		api.POST("/todo", todoHandler.CreateTodo)
-		//api.PUT("/todoList/:task_id", todoHandler.UpdateTodo)
+		api.PUT("/todoList/:task_id", todoHandler.UpdateTodo)
 		api.DELETE("/todoList/:task_id", todoHandler.DeleteTodo)
 	}
 
