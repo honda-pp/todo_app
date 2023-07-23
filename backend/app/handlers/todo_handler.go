@@ -34,6 +34,7 @@ func (h *TodoHandler) GetTodoList(c *gin.Context) {
 func (h *TodoHandler) CreateTodo(c *gin.Context) {
 	var newTodo models.Todo
 	if err := c.BindJSON(&newTodo); err != nil {
+		logger.LogError(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
@@ -45,13 +46,43 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Todo created successfully", "task_id": taskID})
+	c.JSON(http.StatusCreated, gin.H{"task_id": taskID})
+}
+
+func (h *TodoHandler) UpdateTodo(c *gin.Context) {
+	var updatedTodo models.Todo
+	if err := c.BindJSON(&updatedTodo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	taskIDStr := c.Param("task_id")
+	taskID, err := strconv.Atoi(taskIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task_id"})
+		return
+	}
+
+	if taskID != updatedTodo.TaskID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "task_id in URL does not match task_id in request body"})
+		return
+	}
+
+	err = h.todoUsecase.UpdateTodo(&updatedTodo)
+	if err != nil {
+		logger.LogError(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update todo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Todo updated successfully"})
 }
 
 func (h *TodoHandler) DeleteTodo(c *gin.Context) {
 	taskIDStr := c.Param("task_id")
 	taskID, err := strconv.Atoi(taskIDStr)
 	if err != nil {
+		logger.LogError(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task_id"})
 		return
 	}

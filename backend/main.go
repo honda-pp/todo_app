@@ -35,8 +35,8 @@ func main() {
 	{
 		api.GET("/todoList", todoHandler.GetTodoList)
 		api.POST("/todo", todoHandler.CreateTodo)
-		//api.PUT("/todoList/:task_id", todoHandler.UpdateTodo)
-		api.DELETE("/todoList/:task_id", todoHandler.DeleteTodo)
+		api.PUT("/todo/:task_id", todoHandler.UpdateTodo)
+		api.DELETE("/todo/:task_id", todoHandler.DeleteTodo)
 	}
 
 	err = router.Run(":8080")

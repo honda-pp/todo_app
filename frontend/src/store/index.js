@@ -17,6 +17,12 @@ const store = createStore({
     DELETE_TODO(state, deleteTaskId) {
       state.todoList = state.todoList.filter((todo) => todo.task_id !== deleteTaskId);
     },
+    UPDATE_TODO(state, updatedTodo) {
+      const index = state.todoList.findIndex((todo) => todo.task_id === updatedTodo.task_id);
+      if (index !== -1) {
+        state.todoList[index] = updatedTodo;
+      }
+    },
   },
   actions: {
     async getTodoList(context) {
@@ -42,6 +48,14 @@ const store = createStore({
         context.commit('DELETE_TODO', deleteTaskId);
       } catch (error) {
         console.error('Error deleting todo item in store:', error);
+      }
+    },
+    async updateTodo(context, updatedTodo) {
+      try {
+        await todoApi.updateTodoItem(updatedTodo);
+        context.commit('UPDATE_TODO', updatedTodo);
+      } catch (error) {
+        console.error('Error updating todo item in store:', error);
       }
     },
   },
