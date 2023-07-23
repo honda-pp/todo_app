@@ -3,7 +3,11 @@
     <h1>ToDo List</h1>
     <ul>
       <li v-for="todo in todoList" :key="todo.task_id">
-        <span>{{ todo.title }}</span>
+        <div>
+          <span>{{ todo.title }}</span>
+          <span v-if="todo.description"> - {{ todo.description }}</span>
+          <span v-if="todo.completed"> - Completed</span>
+        </div>
         <button @click="openPopup(todo)">Edit</button>
         <button @click="deleteTodo(todo.task_id)">Delete</button>
       </li>
@@ -14,7 +18,22 @@
       <div class="popup">
         <h2>{{ editedTodo.task_id ? 'Edit' : 'Add New' }} ToDo</h2>
         <form @submit.prevent="handleSubmit">
-          <input v-model="editedTodo.title" type="text" />
+          <div>
+            <label for="title">Title:</label>
+            <input v-model="editedTodo.title" type="text" id="title" required />
+          </div>
+          <div>
+            <label for="description">Description:</label>
+            <input v-model="editedTodo.description" type="text" id="description" />
+          </div>
+          <div>
+            <label for="dueDate">Due Date:</label>
+            <input v-model="editedTodo.dueDate" type="date" id="dueDate" />
+          </div>
+          <div>
+            <label for="completed">Completed:</label>
+            <input v-model="editedTodo.completed" type="checkbox" id="completed" />
+          </div>
           <button type="submit">{{ editedTodo.task_id ? 'Save' : 'Add' }}</button>
           <button @click="closePopup">Cancel</button>
         </form>
@@ -28,7 +47,13 @@ import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const todoList = ref([]);
-const editedTodo = ref({});
+const editedTodo = ref({
+  task_id: -1,
+  title: '',
+  description: '',
+  dueDate: '',
+  completed: false,
+});
 const showPopup = ref(false);
 const store = useStore();
 
