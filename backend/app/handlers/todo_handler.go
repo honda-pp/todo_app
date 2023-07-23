@@ -31,6 +31,30 @@ func (h *TodoHandler) GetTodoList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"todoList": todoList})
 }
 
+func (h *TodoHandler) GetTodo(c *gin.Context) {
+
+	taskIDStr := c.Param("task_id")
+	taskID, err := strconv.Atoi(taskIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task_id"})
+		return
+	}
+
+	todo, err := h.todoUsecase.GetTodo(taskID)
+	if err != nil {
+		logger.LogError(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get todo"})
+		return
+	}
+
+	if todo == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"todo": todo})
+}
+
 func (h *TodoHandler) CreateTodo(c *gin.Context) {
 	var newTodo models.Todo
 	if err := c.BindJSON(&newTodo); err != nil {

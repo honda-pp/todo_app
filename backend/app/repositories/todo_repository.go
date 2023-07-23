@@ -19,7 +19,7 @@ func NewTodoRepository(db *sql.DB) *TodoRepository {
 
 func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 
-	query := "SELECT task_id, title, description, due_date, completed, created_at, updated_at FROM todo"
+	query := "SELECT task_id, title, completed FROM todo order by task_id asc"
 
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -34,11 +34,7 @@ func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 		err := rows.Scan(
 			&todo.TaskID,
 			&todo.Title,
-			&todo.Description,
-			&todo.DueDate,
 			&todo.Completed,
-			&todo.CreatedAt,
-			&todo.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -51,6 +47,31 @@ func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 	}
 
 	return todoList, nil
+}
+
+func (r *TodoRepository) GetTodo(taskID int) (*models.Todo, error) {
+	query := "SELECT task_id, title, description, due_date, completed, created_at, updated_at FROM todo WHERE task_id = $1"
+
+	row := r.db.QueryRow(query, taskID)
+	todo := &models.Todo{}
+
+	err := row.Scan(
+		&todo.TaskID,
+		&todo.Title,
+		&todo.Description,
+		&todo.DueDate,
+		&todo.Completed,
+		&todo.CreatedAt,
+		&todo.UpdatedAt,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return todo, nil
 }
 
 func (r *TodoRepository) CreateTodo(newTodo *models.Todo) (int, error) {
