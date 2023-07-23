@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"time"
 )
 
 type Todo struct {
@@ -11,6 +10,6 @@ type Todo struct {
 	Description string       `json:"description"`
 	DueDate     sql.NullTime `json:"due_date"`
 	Completed   bool         `json:"completed"`
-	CreatedAt   time.Time    `json:"created_at"`
+	CreatedAt   sql.NullTime `json:"created_at"`
 	UpdatedAt   sql.NullTime `json:"updated_at"`
 }

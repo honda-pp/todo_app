@@ -19,7 +19,7 @@ func NewTodoRepository(db *sql.DB) *TodoRepository {
 
 func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 
-	query := "SELECT task_id, title, description, due_date, completed, created_at, updated_at FROM todo"
+	query := "SELECT task_id, title, completed FROM todo order by task_id asc"
 
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -34,11 +34,7 @@ func (r *TodoRepository) GetTodoList() ([]*models.Todo, error) {
 		err := rows.Scan(
 			&todo.TaskID,
 			&todo.Title,
-			&todo.Description,
-			&todo.DueDate,
 			&todo.Completed,
-			&todo.CreatedAt,
-			&todo.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err

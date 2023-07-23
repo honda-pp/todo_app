@@ -19,6 +19,16 @@ export const getTodoList = async () => {
   }
 };
 
+export const getTodoItem = async (taskId) => {
+  try {
+    const response = await todoApi.get(`/todo/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching todo item with task_id ${taskId}:`, error);
+    throw error;
+  }
+};
+
 export const addTodoItem = async (newTodoData) => {
   try {
     const response = await todoApi.post('/todo', newTodoData);
