@@ -19,3 +19,7 @@ func (uc *TodoUsecase) GetTodoList() ([]*models.Todo, error) {
 
 	return uc.todoRepo.GetTodoList()
 }
+
+func (uc *TodoUsecase) CreateTodo(todo *models.Todo) (int, error) {
+	return uc.todoRepo.CreateTodo(todo)
+}
