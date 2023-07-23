@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/honda-pp/todo_app/backend/app/handlers"
 	"github.com/honda-pp/todo_app/backend/app/repositories"
@@ -23,15 +24,20 @@ func main() {
 
 	router := gin.Default()
 
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:88"}
+	config.AllowCredentials = true
+	router.Use(cors.New(config))
+
 	todoHandler := handlers.NewTodoHandler(todoUsecase)
 
 	api := router.Group("/api")
 	{
-		api.GET("/todos", todoHandler.GetTodos)
+		api.GET("/todoList", todoHandler.GetTodoList)
 		/*
-			api.POST("/todos", todoHandler.CreateTodo)
-			api.PUT("/todos/:id", todoHandler.UpdateTodo)
-			api.DELETE("/todos/:id", todoHandler.DeleteTodo)
+			api.POST("/todoList", todoHandler.CreateTodo)
+			api.PUT("/todoList/:id", todoHandler.UpdateTodo)
+			api.DELETE("/todoList/:id", todoHandler.DeleteTodo)
 		*/
 	}
 

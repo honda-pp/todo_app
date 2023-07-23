@@ -20,12 +20,10 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
-    environment:
-      - NODE_OPTIONS=--openssl-legacy-provider
     ports:
       - 88:8888
     volumes:
-      - /app/node_modules
+      - node_modules:/app/node_modules
       - ./frontend:/app
     command: npm run serve
   db:
@@ -43,3 +41,4 @@ services:
       - POSTGRES_DB=${db_name}
 volumes:
   db-data:
+  node_modules:

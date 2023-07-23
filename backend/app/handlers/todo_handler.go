@@ -18,7 +18,7 @@ func NewTodoHandler(todoUsecase *usecases.TodoUsecase) *TodoHandler {
 	}
 }
 
-func (h *TodoHandler) GetTodos(c *gin.Context) {
+func (h *TodoHandler) GetTodoList(c *gin.Context) {
 
 	todoList, err := h.todoUsecase.GetTodoList()
 	if err != nil {
