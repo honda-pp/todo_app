@@ -4,22 +4,19 @@
     <ul>
       <li v-for="todo in todoList" :key="todo.task_id">
         <span>{{ todo.title }}</span>
-        <button @click="openEditPopup(todo)">Edit</button>
+        <button @click="openPopup(todo)">Edit</button>
         <button @click="deleteTodo(todo.task_id)">Delete</button>
       </li>
     </ul>
-    <form @submit.prevent="addTodo">
-      <input v-model="newTodoTitle" type="text" placeholder="New ToDo" />
-      <button type="submit">Add</button>
-    </form>
+    <button @click="openPopup(null)">Add New ToDo</button>
 
-    <div v-if="showEditPopup">
+    <div v-if="showPopup">
       <div class="popup">
-        <h2>Edit ToDo</h2>
-        <form @submit.prevent="updateTodo">
+        <h2>{{ editedTodo.task_id ? 'Edit' : 'Add New' }} ToDo</h2>
+        <form @submit.prevent="handleSubmit">
           <input v-model="editedTodo.title" type="text" />
-          <button type="submit">Save</button>
-          <button @click="closeEditPopup">Cancel</button>
+          <button type="submit">{{ editedTodo.task_id ? 'Save' : 'Add' }}</button>
+          <button @click="closePopup">Cancel</button>
         </form>
       </div>
     </div>
@@ -31,10 +28,8 @@ import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const todoList = ref([]);
-const newTodoTitle = ref('');
 const editedTodo = ref({});
-const showEditPopup = ref(false);
-
+const showPopup = ref(false);
 const store = useStore();
 
 onMounted(async () => {
@@ -42,36 +37,36 @@ onMounted(async () => {
   todoList.value = store.state.todoList;
 });
 
-const addTodo = async () => {
-  const newTodoData = {
-    task_id: -1,
-    title: newTodoTitle.value,
-    description: '',
-    completed: false,
-  };
+const openPopup = (todo = null) => {
+  showPopup.value = true;
+  if (todo) {
+    editedTodo.value = { ...todo };
+  } else {
+    editedTodo.value = {
+      task_id: -1,
+      title: '',
+      description: '',
+      completed: false,
+    };
+  }
+};
 
-  await store.dispatch('addTodo', newTodoData);
+const closePopup = () => {
+  showPopup.value = false;
+};
 
-  newTodoTitle.value = '';
+const handleSubmit = async () => {
+  if (editedTodo.value.task_id === -1) {
+    await store.dispatch('addTodo', editedTodo.value);
+  } else {
+    await store.dispatch('updateTodo', editedTodo.value);
+  }
+  showPopup.value = false;
 };
 
 const deleteTodo = async (task_id) => {
   await store.dispatch('deleteTodo', task_id);
   todoList.value = store.state.todoList;
-};
-
-const openEditPopup = (todo) => {
-  editedTodo.value = { ...todo };
-  showEditPopup.value = true;
-};
-
-const closeEditPopup = () => {
-  showEditPopup.value = false;
-};
-
-const updateTodo = async () => {
-  await store.dispatch('updateTodo', editedTodo.value);
-  showEditPopup.value = false;
 };
 </script>
 
