@@ -30,7 +30,7 @@
           </div>
           <div>
             <label for="due_date">Due Date:</label>
-            <input v-model="editedTodo.due_date" type="date" id="due_date" :disabled="!canEdit" />
+            <input v-model="editedTodo.due_date.Time" type="date" id="due_date" :disabled="!canEdit" />
           </div>
           <div>
             <label for="completed">Completed:</label>
@@ -38,11 +38,11 @@
           </div>
           <div>
             <label for="createdAt">Created At:</label>
-            <input v-model="editedTodo.created_at" type="date" id="createdAt" :disabled="true" />
+            <input v-model="editedTodo.created_at.Time" type="date" id="createdAt" :disabled="true" />
           </div>
           <div>
             <label for="updatedAt">Updated At:</label>
-            <input v-model="editedTodo.updated_at" type="date" id="updatedAt" :disabled="true" />
+            <input v-model="editedTodo.updated_at.Time" type="date" id="updatedAt" :disabled="true" />
           </div>
           <button type="submit" v-if="canEdit">{{ editedTodo.task_id ? 'Save' : 'Add' }}</button>
           <button type="button" @click="closePopup">Close</button>
@@ -65,10 +65,10 @@ const editedTodo = ref({
   task_id: -1,
   title: '',
   description: '',
-  due_date: '',
+  due_date: {'Time': null, 'Valid': false},
   completed: false,
-  created_at: '',
-  updated_at: '',
+  created_at: {'Time': null, 'Valid': false},
+  updated_at: {'Time': null, 'Valid': false},
 });
 const showPopup = ref(false);
 const canEdit = ref(false);
@@ -85,9 +85,9 @@ const openPopup = async (todo = null, editMode = false) => {
   if (todo) {
     try {
       const response = await getTodoItem(todo.task_id);
-      response.todo.due_date = convertSqlNullTimeToDateString(response.todo.due_date)
-      response.todo.created_at = convertSqlNullTimeToDateString(response.todo.created_at)
-      response.todo.updated_at = convertSqlNullTimeToDateString(response.todo.updated_at)
+      response.todo.due_date.Time = convertSqlNullTimeToDateString(response.todo.due_date)
+      response.todo.created_at.Time = convertSqlNullTimeToDateString(response.todo.created_at)
+      response.todo.updated_at.Time = convertSqlNullTimeToDateString(response.todo.updated_at)
       editedTodo.value = { ...response.todo };
     } catch (error) {
       console.error('Error fetching todo details:', error);
@@ -97,10 +97,10 @@ const openPopup = async (todo = null, editMode = false) => {
       task_id: -1,
       title: '',
       description: '',
-      due_date: '',
+      due_date: {'Time': null, 'Valid': false},
       completed: false,
-      created_at: '',
-      updated_at: '',
+      created_at: {'Time': null, 'Valid': false},
+      updated_at: {'Time': null, 'Valid': false},
     };
   }
 };
@@ -110,9 +110,15 @@ const closePopup = () => {
 };
 
 const handleSubmit = async () => {
+  if (editedTodo.value.due_date.Time !== null) {
+    editedTodo.value.due_date.Time = new Date(editedTodo.value.due_date.Time).toISOString()
+    editedTodo.value.due_date.Valid = true
+  }
   if (editedTodo.value.task_id === -1) {
     await store.dispatch('addTodo', editedTodo.value);
   } else {
+    editedTodo.value.created_at = {'Time': null, 'Valid': false}
+    editedTodo.value.updated_at = {'Time': null, 'Valid': false}
     await store.dispatch('updateTodo', editedTodo.value);
   }
   showPopup.value = false;

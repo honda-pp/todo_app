@@ -7,5 +7,5 @@ export function convertSqlNullTimeToDateString(sqlNullTime) {
     const day = String(dateObj.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
-  return '';
+  return null;
 }
